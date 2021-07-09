@@ -1,17 +1,22 @@
 const jwt = require("jsonwebtoken");
+// const jwt=require("jwt-simple");
 const config = require("../config/auth.config.js");
 const db = require("../models");
 const User = db.user;
 
 verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
+    // let token = req.headers["Authorization"];
+
 
     if (!token) {
         return res.status(403).send({
             message: "No token provided!"
         });
     }
+     token=token.replace('Bearer','');
 
+    // jwt.verify(token,)
     jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
             return res.status(401).send({

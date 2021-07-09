@@ -2,6 +2,7 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
+const fs = require('fs');
 
 const Op = db.Sequelize.Op;
 
@@ -10,38 +11,65 @@ var bcrypt = require("bcrypt");
 
 exports.signup = (req, res) => {
     // Save User to Database
-    User.create({
-        username: req.body.username,
-        name: req.body.name,
-        email: req.body.email,
-        isTcp: req.body.isTcp,
-        avatar: req.body.avatar,
-        ocupation: req.body.ocupation,
-        password: bcrypt.hashSync(req.body.password, 8)
-    })
-        .then(user => {
-        if (req.body.roles) {
-        Role.findAll({
+    let image=req.body.avatar;
+    var base64Data = image.data.replace(/^data:image\/jpeg;base64,/, "");
+    fs.writeFile('avatar.jpg', base64Data, 'base64', function(err) {
+        console.log(err);
+    });
+
+
+
+        if (req.body.name) {
+        User.findOne({
             where: {
-                name: {
-                    [Op.or]: req.body.roles
-                }
+                name: req.body.name
             }
-        }).then(roles => {
-            user.setRoles(roles).then(() => {
-            res.send({ message: "User registered successfully!" });
-    });
-     });
-    } else {
-        // user role = 1
-        user.setRoles([1]).then(() => {
-            res.send({ message: "User registered successfully!" });
-    });
+        })
+            .then(user => {
+                if (!user) {
+
+                    User.create({
+                        username: req.body.username,
+                        name: req.body.name,
+                        email: req.body.email,
+                        isTcp: req.body.isTcp,
+                        avatar: image.title,
+                        ocupation: req.body.ocupation,
+                        password: bcrypt.hashSync(req.body.password, 8)
+                    })
+                        .then(user => {
+                            if (req.body.roles) {
+                                Role.findAll({
+                                    where: {
+                                        name: {
+                                            [Op.or]: req.body.roles
+                                        }
+                                    }
+                                }).then(roles => {
+                                    user.setRoles(roles).then(() => {
+                                        res.send({message: "User registered successfully!"});
+                                    });
+                                });
+                            } else {
+                                // user role = 1
+                                user.setRoles([1]).then(() => {
+                                    res.send({message: "User registered successfully!"});
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            res.status(500).send({message: err.message});
+                        });
+
+                }
+                else {
+                    return res.status(404).send({message: "This user exist "});
+
+                }
+            })
+
     }
-})
-.catch(err => {
-        res.status(500).send({ message: err.message });
-});
+
 };
 
 exports.login = (req, res) => {

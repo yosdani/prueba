@@ -1,11 +1,11 @@
-const { authJwt } = require("../middleware");
+const {authJwt} = require("../middleware");
 const controller = require("../controllers/user.controller");
 
-module.exports = function(app) {
-    app.use(function(req, res, next) {
+module.exports = function (app) {
+    app.use(function (req, res, next) {
         res.header(
-            "Access-Control-Allow-Headers",
-            "x-access-token, Origin, Content-Type, Accept"
+            // "Access-Control-Allow-Headers",
+            // "x-access-token, Origin, Content-Type, Accept"
         );
         next();
     });
@@ -17,7 +17,11 @@ module.exports = function(app) {
         [authJwt.verifyToken],
         controller.userBoard
     );
-
+    app.get(
+        "/api/showUser",
+        [authJwt.verifyToken, authJwt.isAdmin],
+        controller.showUser
+    );
     app.get(
         "/api/test/mod",
         [authJwt.verifyToken, authJwt.isModerator],
@@ -27,7 +31,24 @@ module.exports = function(app) {
     app.get(
         "/api/test/admin",
         [authJwt.verifyToken, authJwt.isAdmin],
-        controller.getAllMembers
+        controller.adminBoard
+    );
 
+    app.get(
+        "/api/users",
+        [authJwt.verifyToken],
+        controller.getUsers
+    );
+
+    app.post(
+        "/api/updateUser",
+        [authJwt.verifyToken],
+        controller.updateUser
+    );
+
+    app.post(
+        "/api/change-password",
+        [authJwt.verifyToken],
+        controller.changePassword
     );
 };

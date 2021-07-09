@@ -1,3 +1,5 @@
+const db = require("../models");
+const config = require("../config/auth.config");
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("users", {
         name: {
@@ -25,5 +27,4 @@ module.exports = (sequelize, Sequelize) => {
 
     return User;
 };
-
 
