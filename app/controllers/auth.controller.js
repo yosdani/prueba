@@ -109,7 +109,6 @@ exports.login = (req, res) => {
         name: user.name,
         username: user.username,
         email: user.email,
-        isTcp: user.isTcp,
         ocupation: user.ocupation,
         avatar: user.avatar,
         roles: authorities,
