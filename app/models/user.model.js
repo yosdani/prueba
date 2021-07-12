@@ -14,11 +14,9 @@ module.exports = (sequelize, Sequelize) => {
         password: {
             type: Sequelize.STRING
         },
-        isTcp: {
-            type: Sequelize.BOOLEAN
-        },
+
         avatar: {
-            type: Sequelize.STRING
+            type: Sequelize.TEXT
         },
         ocupation: {
             type: Sequelize.STRING
