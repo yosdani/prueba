@@ -85,7 +85,6 @@ exports.updateUser = (req, res) => {
                             username: req.body.username,
                             name: req.body.name,
                             avatar: req.body.avatar,
-                            ocupation: req.body.ocupation,
                         })
                         return res.status(200).send(user);
                     } else {

@@ -18,9 +18,7 @@ module.exports = (sequelize, Sequelize) => {
         avatar: {
             type: Sequelize.TEXT
         },
-        ocupation: {
-            type: Sequelize.STRING
-        },
+
     });
 
     return User;

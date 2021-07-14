@@ -46,7 +46,7 @@ module.exports = function (app) {
         controller.updateUser
     );
 
-    app.post(
+    app.put(
         "/api/change-password",
         [authJwt.verifyToken],
         controller.changePassword

@@ -10,12 +10,14 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcrypt");
 
 exports.signup = (req, res) => {
+
+
     // Save User to Database
-    let image=req.body.avatar;
-    var base64Data = image.data.replace(/^data:image\/jpeg;base64,/, "");
-    fs.writeFile('avatar.jpg', base64Data, 'base64', function(err) {
-        console.log(err);
-    });
+    // let image=req.body.avatar;
+    // var base64Data = image.data.replace(/^data:image\/jpeg;base64,/, "");
+    // fs.writeFile('avatar.jpg', base64Data, 'base64', function(err) {
+    //     console.log(err);
+    // });
 
 
 
@@ -27,14 +29,11 @@ exports.signup = (req, res) => {
         })
             .then(user => {
                 if (!user) {
-
                     User.create({
                         username: req.body.username,
                         name: req.body.name,
                         email: req.body.email,
-                        isTcp: req.body.isTcp,
-                        avatar: image.title,
-                        ocupation: req.body.ocupation,
+                        avatar: req.avatar,
                         password: bcrypt.hashSync(req.body.password, 8)
                     })
                         .then(user => {
@@ -47,15 +46,10 @@ exports.signup = (req, res) => {
                                     }
                                 }).then(roles => {
                                     user.setRoles(roles).then(() => {
-                                        res.send({message: "User registered successfully!"});
                                     });
                                 });
-                            } else {
-                                // user role = 1
-                                user.setRoles([1]).then(() => {
-                                    res.send({message: "User registered successfully!"});
-                                });
                             }
+
                         })
                         .catch(err => {
                             res.status(500).send({message: err.message});
@@ -69,6 +63,7 @@ exports.signup = (req, res) => {
             })
 
     }
+    return res.status(200).send({message:"sucessfully"});
 
 };
 
